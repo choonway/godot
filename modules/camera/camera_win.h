@@ -34,6 +34,14 @@
 #include "servers/camera/camera_feed.h"
 #include "servers/camera_server.h"
 
+// windows specific
+#include <mfapi.h>
+#include <mfidl.h>
+#include <mfreadwrite.h>
+
+//?
+#include <shlwapi.h>
+
 class CameraWindows : public CameraServer {
 private:
 	void add_active_cameras();
@@ -41,6 +49,20 @@ private:
 public:
 	CameraWindows();
 	~CameraWindows();
+};
+
+template <class T>
+void SafeRelease(T **ppT) {
+	if (*ppT) {
+		(*ppT)->Release();
+		*ppT = NULL;
+	}
+}
+
+struct ChooseDeviceParam {
+	IMFActivate **ppDevices; // Array of IMFActivate pointers.
+	UINT32 count; // Number of elements in the array.
+	UINT32 selection; // Selected device, by array index.
 };
 
 #endif /* CAMERAWIN_H */
